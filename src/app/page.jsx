@@ -45,6 +45,7 @@ export default function Main() {
 
         {/* 메인 구역 */}
         <div className="flex flex-col w-full px-[50px] py-[40px] bg-beige-400 rounded-tr-lg rounded-b-lg">
+          {/* 상단 메뉴 선택 버튼 */}
           <div className="flex flex-row justify-between">
             <Dropdown
               options={options}
@@ -79,6 +80,9 @@ export default function Main() {
               ))}
             </div>
           </div>
+
+          {/* 구분선 */}
+          <div className="w-full my-9 border-[1px] border-beige-700"></div>
         </div>
       </div>
     </div>
