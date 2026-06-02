@@ -29,7 +29,10 @@ export default function Main() {
   ]
 
   return (
-    <div className="bg-beige-500 h-screen">
+    <div className="relative bg-beige-500 h-screen">
+      <button className="absolute top-[65px] right-[100px] px-16 py-3 bg-beige-700 text-xl text-white font-bold rounded-lg">
+        <p>등록하기</p>
+      </button>
       <div className="flex flex-col mx-[100px] py-[100px]">
         {/* 상단 메뉴 */}
         <div className="flex flex-row">
