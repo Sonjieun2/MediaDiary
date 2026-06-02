@@ -24,10 +24,10 @@ export default function Dropdown({options = [], placeholder = '선택하세요',
   }, [])
 
   return (
-    <div ref={dropdownRef} className="relative w-full">
+    <div ref={dropdownRef} className="relative">
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`flex flex-row items-center justify-between bg-white px-4 py-1 rounded-lg border border-beige-800 text-md font-medium text-beige-800 ${className}`}
+        className={`flex flex-row items-center justify-between px-4 py-1 rounded-lg border border-beige-800 text-md font-medium text-beige-800 ${className}`}
       >
         <p>{selected?.label || placeholder}</p>
         <RiArrowDropDownLine className="text-3xl text-beige-800" />

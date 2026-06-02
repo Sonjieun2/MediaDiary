@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { IoGrid } from 'react-icons/io5'
 import { TiThMenu} from 'react-icons/ti'
-import Dropdown from '../components/Dropdown'
+import Layout from '../components/common/Layout'
+import Dropdown from '../components/common/Dropdown'
 import CardMenu from '../components/CardMenu'
 import ListMenu from '../components/ListMenu'
 
@@ -30,10 +32,15 @@ export default function Main() {
 
   return (
     <div className="relative bg-beige-500 h-screen">
-      <button className="absolute top-[65px] right-[100px] px-16 py-3 bg-beige-700 text-xl text-white font-bold rounded-lg">
+      {/* 등록 버튼 */}
+      <Link
+        to="/upload"
+        className="absolute top-[65px] right-[100px] px-16 py-3 bg-beige-700 text-xl text-white font-bold rounded-lg"
+      >
         <p>등록하기</p>
-      </button>
-      <div className="flex flex-col mx-[100px] py-[100px]">
+      </Link>
+
+      <Layout className="flex-col">
         {/* 상단 메뉴 */}
         <div className="flex flex-row">
           {cardMenu.map((menu) => (
@@ -59,7 +66,7 @@ export default function Main() {
               onSelect={(option) => {
                 setSelectedOption(option)
               }}
-              className="w-[150px]"
+              className="w-[150px] bg-white"
             />
 
             {/* 스타일 메뉴 */}
@@ -95,7 +102,7 @@ export default function Main() {
 
           {chooseMenu ? <CardMenu /> : <ListMenu />}
         </div>
-      </div>
+      </Layout>
     </div>
   )
 }
