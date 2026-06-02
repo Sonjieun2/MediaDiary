@@ -1,5 +1,11 @@
+import List from './List'
+
 export default function ListMenu() {
   return (
-    <div>리스트메뉴</div>
+    <div className="flex flex-col justify-center">
+      <div className="flex flex-col gap-6 justify-items-center">
+        <List />
+      </div>
+    </div>
   )
 }

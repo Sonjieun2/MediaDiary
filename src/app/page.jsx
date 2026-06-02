@@ -29,7 +29,7 @@ export default function Main() {
   ]
 
   return (
-    <div className="bg-beige-500">
+    <div className="bg-beige-500 h-screen">
       <div className="flex flex-col mx-[100px] py-[100px]">
         {/* 상단 메뉴 */}
         <div className="flex flex-row">

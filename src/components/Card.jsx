@@ -12,7 +12,7 @@ export default function Card() {
       {/* 카드 부분 */}
       <div
         onClick={() => setIsFlipped(!isFlipped)}
-        className="aspect-[2/3] w-[300px] [perspective:1000px]"
+        className="aspect-[2/3] w-[250px] [perspective:1000px]"
       >
         <div
           className={`
