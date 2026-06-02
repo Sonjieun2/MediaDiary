@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { IoGrid } from 'react-icons/io5'
 import { TiThMenu} from 'react-icons/ti'
 import Dropdown from '../components/Dropdown'
+import CardMenu from '../components/CardMenu'
+import ListMenu from '../components/ListMenu'
 
 const cardMenu = [
   {title: '기록장', id: 0},
@@ -18,6 +20,7 @@ export default function Main() {
   const [clicked, setClicked] = useState(0)
   const [selectedOption, setSelectedOption] = useState(null)
   const [selectedStyle, setSelectedStyle] = useState("card")
+  const [chooseMenu, setChooseMenu] = useState(true)
 
   const options = [
     { label: '전체', value: 'all' },
@@ -26,7 +29,7 @@ export default function Main() {
   ]
 
   return (
-    <div className="bg-beige-500 h-screen">
+    <div className="bg-beige-500">
       <div className="flex flex-col mx-[100px] py-[100px]">
         {/* 상단 메뉴 */}
         <div className="flex flex-row">
@@ -68,7 +71,10 @@ export default function Main() {
               />
               {styleMenu.map((style) => (
                 <button
-                  onClick={() => setSelectedStyle(style.id)}
+                  onClick={() => {
+                    setSelectedStyle(style.id)
+                    setChooseMenu(!chooseMenu)
+                  }}
                   className={`
                       relative z-10 flex items-center justify-center text-2xl rounded-lg px-8 py-1 w-1/2
                       transition-colors duration-300
@@ -82,7 +88,9 @@ export default function Main() {
           </div>
 
           {/* 구분선 */}
-          <div className="w-full my-9 border-[1px] border-beige-700"></div>
+          <div className="w-full my-9 border-[1px] border-beige-700" />
+
+          {chooseMenu ? <CardMenu /> : <ListMenu />}
         </div>
       </div>
     </div>

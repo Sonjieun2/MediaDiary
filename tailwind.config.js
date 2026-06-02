@@ -15,6 +15,8 @@ export default {
           800: '#604932',
         },
         'burgundy': '#B35D5D',
+        'green': '#8CC989',
+        'orange': '#F1936D',
       },
     },
   },
