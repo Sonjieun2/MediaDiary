@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { DatePicker } from 'react-datepicker'
 import { PiStarFill, PiStarLight } from 'react-icons/pi'
-import "react-datepicker/dist/react-datepicker.css"   // 기본 스타일
+import { FaCalendarAlt, FaPlus } from 'react-icons/fa'
 import Layout from '../components/common/Layout'
 import Dropdown from '../components/common/Dropdown'
+import Calendar from '../components/Calendar'
 
 export default function Registration() {
   const Cartegory = [
@@ -22,11 +22,12 @@ export default function Registration() {
   const [chooseCartegory, setChooseCartegory] = useState(null)
   const [rating, setRating] = useState(0)
   const [chooseStatus, setChooseStatus] = useState(0)
-  const [chooseDate, setChooseDate] = useState(null)
+  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [open, setOpen] = useState(false)
 
   return (
     <Layout>
-      <p className="w-full text-left text-3xl">작품 추가</p>
+      <p className="w-full text-left text-3xl font-bold mb-[50px]">작품 추가</p>
 
       <div className="flex flex-col items-center jusitfy-center px-[100px] py-[50px] bg-beige-400 rounded-lg">
         <div className="flex flex-row w-full gap-5">
@@ -34,9 +35,9 @@ export default function Registration() {
           <div className="aspect-[2/3] w-[250px] bg-beige-600 rounded-lg" />
 
           {/* 내용 등록 */}
-          <div className="flex flex-col gap-5 w-2/3">
+          <div className="flex flex-col gap-8 w-2/3 text-xl">
             {/* 카테고리 선택 */}
-            <div className="flex flex-row items-center gap-3 w-full">
+            <div className="flex flex-row items-center gap-8 w-full">
               <p className={labelClass}>카테고리</p>
               <Dropdown
                 options={Cartegory}
@@ -44,19 +45,21 @@ export default function Registration() {
                 onSelect={(option) => {
                   setChooseCartegory(option)
                 }}
-                className="w-[250px]"
+                className="w-[250px] py-3"
               />
-              <button className="aspect-square w-[45px] bg-beige-600 rounded-lg">+</button>
+              <button className="aspect-square w-[55px] bg-beige-600 border border-beige-700 rounded-lg">
+                <p className="font-bold text-2xl">+</p>
+              </button>
             </div>
 
             {/* 제목 */}
-            <div className="flex flex-row items-center gap-3">
+            <div className="flex flex-row items-center gap-8">
               <p className={labelClass}>제목</p>
-              <input className="px-3 py-2 w-full bg-beige-600 border border-beige-700 rounded-lg"></input>
+              <input className="px-3 py-3 w-full bg-beige-600 border border-beige-700 rounded-lg"></input>
             </div>
 
             {/* 별점 */}
-            <div className="flex flex-row items-center gap-3">
+            <div className="flex flex-row items-center gap-8">
               <p className={labelClass}>별점</p>
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => star <= rating ?
@@ -64,13 +67,13 @@ export default function Registration() {
                     <PiStarFill
                       key={star}
                       onClick={() => setRating(star)}
-                      className="text-2xl text-beige-800 cursor-pointer hover:text-beige-800"                  
+                      className="text-3xl text-beige-800 cursor-pointer hover:text-beige-800"                  
                     />
                   ) : (
                     <PiStarLight
                       key={star}
                       onClick={() => setRating(star)}
-                      className="text-2xl text-beige-800 cursor-pointer"
+                      className="text-3xl text-beige-800 cursor-pointer"
                     />
                   )
                 )}
@@ -78,14 +81,14 @@ export default function Registration() {
             </div>
 
             {/* 상태 */}
-            <div className="flex flex-row items-center gap-3">
+            <div className="flex flex-row items-center gap-8">
               <p className={labelClass}>상태</p>  
               <div className="flex flex-row gap-2">
                 {Status.map((menu) => (
                   <button
                     onClick={() => setChooseStatus(menu.id)}
                     className={`
-                      w-[120px] py-2 border border-beige-700 rounded-lg
+                      w-[120px] py-3 border border-beige-700 rounded-lg
                       ${chooseStatus===menu.id ? 'bg-beige-600' : 'bg-beige-400'}  
                     `}
                   >
@@ -96,18 +99,29 @@ export default function Registration() {
             </div>
 
             {/* 날짜 */}
-            <div className="flex flex-row items-center gap-3">
+            <div className="relative flex flex-row items-center gap-8">
               <p className={labelClass}>날짜</p>
-              <DatePicker
-                selected={chooseDate}
-                onChange={(date) => setChooseDate(date)}
-                dateFormat="yyyy-MM-dd"
-                disabled={chooseStatus !== 0}
-                className="
-                  w-[250px] px-5 py-2 bg-beige-600 border border-beige-700 rounded-lg
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                "
-              />
+              <button
+                onClick={() => setOpen(!open)}
+                className={`
+                  flex flex-row justify-between items-center w-[250px] px-5 py-3 bg-beige-600 border border-beige-700 rounded-lg
+                  ${chooseStatus !== 0 ? 'opacity-50 cursor-not-allowd' : ''}
+                `}
+              >
+                <p>{selectedDate.toLocaleDateString("ko-KR")}</p>
+                <FaCalendarAlt />
+              </button>
+              {open && (
+                <div className="absolute top-[45px] left-[70px] z-50">
+                  <Calendar
+                    date={selectedDate}
+                    onSelect={(date) => {
+                      setSelectedDate(date)
+                      setOpen(false)
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

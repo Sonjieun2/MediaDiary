@@ -1,0 +1,109 @@
+/* 달력 전체 */
+.rdpRoot {
+  width: 320px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* 년월 + 화살표 영역 */
+.rdp-month_caption {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* 2026년 7월 */
+.rdp-caption_label {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* 화살표 영역 */
+.rdp-nav {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+/* 화살표 버튼 */
+.rdp-button_previous,
+.rdp-button_next {
+  pointer-events: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* 화살표 아이콘 */
+.rdp-chevron {
+  width: 20px;
+  height: 20px;
+}
+
+/* 요일 줄 */
+.rdp-weekdays {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+/* 일 월 화 수 목 금 토 */
+.rdp-weekday {
+  width: 40px;
+  text-align: center;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 날짜 전체 */
+.rdp-weeks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* 한 주 */
+.rdp-week {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* 날짜 칸 */
+.rdp-day {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 오늘 날짜 */
+.rdp-today {
+  color: #ed7777;
+  font-weight: 700;
+}
+
+/* 선택된 날짜 */
+.rdp-selected {
+  background-color: #98724D;
+  color: white !important;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 다른 달 날짜 */
+.rdp-outside {
+  color: #b0b0b0;
+}
