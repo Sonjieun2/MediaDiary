@@ -7,6 +7,7 @@ import heroImg from './assets/hero.png'
 import Header from './components/Header'
 import Main from './app/page'
 import Registration from './page/Registration'
+import AddCategory from './page/AddCategory'
 
 function AppContent() {
   return (
@@ -15,6 +16,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/upload" element={<Registration />} />
+        <Route path="/addCategory" element={<AddCategory />} />
       </Routes>
     </>
   )

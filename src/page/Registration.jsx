@@ -1,15 +1,21 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { PiStarFill, PiStarLight } from 'react-icons/pi'
 import { FaCalendarAlt, FaPlus } from 'react-icons/fa'
+import { IoCaretBackCircle } from 'react-icons/io5'
+
 import Layout from '../components/common/Layout'
 import Dropdown from '../components/common/Dropdown'
 import Calendar from '../components/Calendar'
 
+import { Fields } from '../components/forms/Fields'
+import { FieldConfig } from '../components/forms/FieldConfigs'
+
 export default function Registration() {
-  const Cartegory = [
-    { title: '영화', id: 'movie' },
-    { title: '드라마', id: 'drama' },
-    { title: '애니메이션', id: 'animation' },
+  const Category = [
+    { label: '영화', id: 'movie' },
+    { label: '드라마', id: 'drama' },
+    { label: '애니메이션', id: 'animation' },
   ]
 
   const Status = [
@@ -19,43 +25,56 @@ export default function Registration() {
   ]
 
   const labelClass = "w-24 text-right shrink-0"
-  const [chooseCartegory, setChooseCartegory] = useState(null)
+  const [chooseCategory, setChooseCategory] = useState({label: '영화', id: 'movie'})
   const [rating, setRating] = useState(0)
   const [chooseStatus, setChooseStatus] = useState(0)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [open, setOpen] = useState(false)
+  const currentFields = FieldConfig[chooseCategory?.id] || []   // 카테고리별 아래 입력칸 출력
 
   return (
-    <Layout>
+    <Layout className="relative px-[350px]">
+      {/* 뒤로가기 버튼 */}
+      <Link
+        to='/'
+        className="absolute top-[60px] left-20"
+      >
+        <IoCaretBackCircle className="text-beige-800 text-6xl" />
+      </Link>
+      
       <p className="w-full text-left text-3xl font-bold mb-[50px]">작품 추가</p>
 
       <div className="flex flex-col items-center jusitfy-center px-[100px] py-[50px] bg-beige-400 rounded-lg">
-        <div className="flex flex-row w-full gap-5">
+        {/* 상단 */}
+        <div className="flex flex-row w-full gap-[80px]">
           {/* 포스터 등록 */}
           <div className="aspect-[2/3] w-[250px] bg-beige-600 rounded-lg" />
 
           {/* 내용 등록 */}
-          <div className="flex flex-col gap-8 w-2/3 text-xl">
+          <div className="flex flex-col gap-8 flex-1 text-xl">
             {/* 카테고리 선택 */}
             <div className="flex flex-row items-center gap-8 w-full">
               <p className={labelClass}>카테고리</p>
-              <Dropdown
-                options={Cartegory}
-                placeholder="영화"
-                onSelect={(option) => {
-                  setChooseCartegory(option)
-                }}
-                className="w-[250px] py-3"
-              />
-              <button className="aspect-square w-[55px] bg-beige-600 border border-beige-700 rounded-lg">
-                <p className="font-bold text-2xl">+</p>
-              </button>
+              <div className="flex-1 flex flex-row gap-5">
+                <Dropdown
+                  options={Category}
+                  placeholder="영화"
+                  onSelect={(option) => {
+                    setChooseCategory(option)
+                  }}
+                  className="flex-1"
+                  buttonClassName="py-3"
+                />
+                <button className="aspect-square w-[55px] bg-beige-600 border border-beige-700 rounded-lg">
+                  <p className="font-bold text-2xl">+</p>
+                </button>
+              </div>
             </div>
 
             {/* 제목 */}
             <div className="flex flex-row items-center gap-8">
               <p className={labelClass}>제목</p>
-              <input className="px-3 py-3 w-full bg-beige-600 border border-beige-700 rounded-lg"></input>
+              <input className="flex-1 px-3 py-3 w-[380px] bg-beige-600 border border-beige-700 rounded-lg"></input>
             </div>
 
             {/* 별점 */}
@@ -86,7 +105,11 @@ export default function Registration() {
               <div className="flex flex-row gap-2">
                 {Status.map((menu) => (
                   <button
-                    onClick={() => setChooseStatus(menu.id)}
+                    key={menu.id}
+                    onClick={() => {
+                      setChooseStatus(menu.id)
+                      if (menu.id !== 0) setOpen(false)
+                    }}
                     className={`
                       w-[120px] py-3 border border-beige-700 rounded-lg
                       ${chooseStatus===menu.id ? 'bg-beige-600' : 'bg-beige-400'}  
@@ -102,10 +125,11 @@ export default function Registration() {
             <div className="relative flex flex-row items-center gap-8">
               <p className={labelClass}>날짜</p>
               <button
+                disabled={chooseStatus !== 0}
                 onClick={() => setOpen(!open)}
                 className={`
-                  flex flex-row justify-between items-center w-[250px] px-5 py-3 bg-beige-600 border border-beige-700 rounded-lg
-                  ${chooseStatus !== 0 ? 'opacity-50 cursor-not-allowd' : ''}
+                  flex-1 flex flex-row justify-between items-center w-[250px] px-5 py-3 bg-beige-600 border border-beige-700 rounded-lg
+                  ${chooseStatus !== 0 ? 'opacity-50 cursor-not-allowed' : ''}
                 `}
               >
                 <p>{selectedDate.toLocaleDateString("ko-KR")}</p>
@@ -124,6 +148,19 @@ export default function Registration() {
               )}
             </div>
           </div>
+        </div>
+
+        <div className="w-full border border-[1px] border-beige-700 mt-[70px] mb-[30px]"></div>
+
+        {/* 중간 */}
+        <div className="flex flex-row w-full justify-between">
+          {currentFields.map((field) => (
+            <Fields
+              key={field.label}
+              label={field.label}
+              placeholder={field.placeholder}
+            />
+          ))}
         </div>
       </div>
     </Layout>
