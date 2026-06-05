@@ -9,7 +9,7 @@ import Dropdown from '../components/common/Dropdown'
 import Calendar from '../components/Calendar'
 
 import { Fields } from '../components/forms/Fields'
-import { FieldConfig } from '../components/forms/FieldConfigs'
+import { Field, FieldConfig } from '../components/forms/FieldConfigs'
 
 export default function Registration() {
   const Category = [
@@ -65,16 +65,19 @@ export default function Registration() {
                   className="flex-1"
                   buttonClassName="py-3"
                 />
-                <button className="aspect-square w-[55px] bg-beige-600 border border-beige-700 rounded-lg">
+                <Link
+                  to='/addCategory'
+                  className="aspect-square flex items-center justify-center w-[55px] bg-beige-600 border border-beige-700 rounded-lg"
+                >
                   <p className="font-bold text-2xl">+</p>
-                </button>
+                </Link>
               </div>
             </div>
 
             {/* 제목 */}
             <div className="flex flex-row items-center gap-8">
               <p className={labelClass}>제목</p>
-              <input className="flex-1 px-3 py-3 w-[380px] bg-beige-600 border border-beige-700 rounded-lg"></input>
+              <input className="flex-1 px-3 py-3 w-[380px] bg-beige-600 border border-beige-700 rounded-lg" />
             </div>
 
             {/* 별점 */}
@@ -156,9 +159,9 @@ export default function Registration() {
         <div className="flex flex-row w-full justify-between">
           {currentFields.map((field) => (
             <Fields
-              key={field.label}
-              label={field.label}
-              placeholder={field.placeholder}
+              key={field}
+              label={Field[field].label}
+              placeholder={Field[field].placeholder}
             />
           ))}
         </div>
