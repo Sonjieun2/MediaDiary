@@ -1,11 +1,28 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Layout from '../components/common/Layout'
 import { Field } from '../components/forms/FieldConfigs'
+import { useCategory } from '../context/CategoryContext'
 
 export default function AddCategory() {
+  const [categoryName, setCategoryName] = useState('')
   const [checked, setChecked] = useState([])
-  const labels = Object.values(Field).map(field => field.label)
+  const navigate = useNavigate()
+  const fields = Object.entries(Field)
+
+  const { category, setCategory } = useCategory()
+
+  const inputHandler = (e) => {
+    setCategoryName(e.target.value)
+  }
+
+  const addCategory = () => {
+    const newCategory = { label: categoryName, fields: checked }
+
+    setCategory([ ...category, newCategory ])
+    
+    navigate('/upload')
+  }
 
   return (
     <Layout className="relative px-[350px]">
@@ -13,8 +30,10 @@ export default function AddCategory() {
 
       <div className="flex flex-col items-center jusitfy-center px-[100px] py-[50px] bg-beige-400 rounded-lg">
         {/* 카테고리명 작성 */}
-        <input 
-          className="flex-1 text-center items-center px-3 py-5 w-[380px] bg-beige-600 border border-beige-700 rounded-lg"
+        <input
+          value={categoryName}
+          onChange={inputHandler}
+          className="flex-1 text-center text-xl items-center px-3 py-5 w-[380px] bg-beige-600 border border-beige-700 rounded-lg"
           placeholder="카테고리명"
         />
 
@@ -22,24 +41,24 @@ export default function AddCategory() {
 
         <div className="grid grid-cols-3 gap-5 w-full px-[20px] pb-8">
           {/* 정보 입력란 선택 */}
-          {labels.map((items) => (
+          {fields.map(([key, items]) => (
             <label
-              key={items}
+              key={key}
               className="flex flex-row gap-8 px-[30px] py-5 w-full border border-beige-700 rounded-md"
             >
               <input
                 type="checkbox"
-                checked={checked.includes(items)}
+                checked={checked.includes(key)}
                 disabled={
                   checked.length == 4 &&
-                  !checked.includes(items)
+                  !checked.includes(key)
                 }
                 onChange={() => {
-                  if (checked.includes(items)) {
-                    setChecked(checked.filter(item => item !== items))
+                  if (checked.includes(key)) {
+                    setChecked(checked.filter(item => item !== key))
                   }
                   else {
-                    setChecked([...checked, items])
+                    setChecked([...checked, key])
                   }
                 }}
                 className="
@@ -47,7 +66,7 @@ export default function AddCategory() {
                   accent-beige-700 checked:border-transparent focus:outline-none cursor-pointer
                 "
               />
-              <p className="text-2xl">{items}</p>
+              <p className="text-2xl">{items.label}</p>
             </label>
           ))}
         </div>
@@ -64,12 +83,13 @@ export default function AddCategory() {
         >
           <p className="text-center">취소</p>
         </Link>
-        <Link
-          to='/upload'
+        <button
+          onClick={addCategory}
           className="w-1/4 items px-10 py-3 bg-beige-500 border border-beige-700 rounded-lg text-2xl"
         >
           <p className="text-center">추가</p>
-        </Link>
+          {console.log(categoryName)}
+        </button>
       </div>
     </Layout>
   )

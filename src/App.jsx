@@ -8,16 +8,19 @@ import Header from './components/Header'
 import Main from './app/page'
 import Registration from './page/Registration'
 import AddCategory from './page/AddCategory'
+import { CategoryProvider } from './context/CategoryContext'
 
 function AppContent() {
   return (
     <>
       <Header />
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/upload" element={<Registration />} />
-        <Route path="/addCategory" element={<AddCategory />} />
-      </Routes>
+      <CategoryProvider>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/upload" element={<Registration />} />
+          <Route path="/addCategory" element={<AddCategory />} />
+        </Routes>
+      </CategoryProvider>
     </>
   )
 }

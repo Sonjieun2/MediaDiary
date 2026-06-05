@@ -10,27 +10,24 @@ import Calendar from '../components/Calendar'
 
 import { Fields } from '../components/forms/Fields'
 import { Field, FieldConfig } from '../components/forms/FieldConfigs'
+import { useCategory } from '../context/CategoryContext'
 
 export default function Registration() {
-  const Category = [
-    { label: '영화', id: 'movie' },
-    { label: '드라마', id: 'drama' },
-    { label: '애니메이션', id: 'animation' },
-  ]
-
   const Status = [
     { label: '시청완료', id: 0 },
     { label: '시청중', id: 1 },
     { label: '보고싶음', id:2 },
   ]
 
+  const { category } = useCategory()
+
   const labelClass = "w-24 text-right shrink-0"
-  const [chooseCategory, setChooseCategory] = useState({label: '영화', id: 'movie'})
+  const [chooseCategory, setChooseCategory] = useState(category[0])
   const [rating, setRating] = useState(0)
   const [chooseStatus, setChooseStatus] = useState(0)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [open, setOpen] = useState(false)
-  const currentFields = FieldConfig[chooseCategory?.id] || []   // 카테고리별 아래 입력칸 출력
+  const currentFields = chooseCategory?.fields || []   // 카테고리별 아래 입력칸 출력
 
   return (
     <Layout className="relative px-[350px]">
@@ -57,11 +54,9 @@ export default function Registration() {
               <p className={labelClass}>카테고리</p>
               <div className="flex-1 flex flex-row gap-5">
                 <Dropdown
-                  options={Category}
+                  options={category}
                   placeholder="영화"
-                  onSelect={(option) => {
-                    setChooseCategory(option)
-                  }}
+                  onSelect={setChooseCategory}
                   className="flex-1"
                   buttonClassName="py-3"
                 />
