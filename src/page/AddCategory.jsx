@@ -3,12 +3,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import Layout from '../components/common/Layout'
 import { Field } from '../components/forms/FieldConfigs'
 import { useCategory } from '../context/CategoryContext'
+import Modal from '../components/common/Modal'
 
 export default function AddCategory() {
   const [categoryName, setCategoryName] = useState('')
   const [checked, setChecked] = useState([])
   const navigate = useNavigate()
   const fields = Object.entries(Field)
+  const [modalMessage, setModalMessage] = useState('')
+  const [openModal, setOpenModal] = useState(false)
 
   const { category, setCategory } = useCategory()
 
@@ -17,6 +20,18 @@ export default function AddCategory() {
   }
 
   const addCategory = () => {
+    if (categoryName === '') {
+      setModalMessage('카테고리 이름을 입력하세요.')
+      setOpenModal(true)
+      return
+    }
+
+    if (checked.length === 0) {
+      setModalMessage('최소 1개 이상의 항목을 선택해주세요.')
+      setOpenModal(true)
+      return
+    }
+
     const newCategory = { label: categoryName, fields: checked }
 
     setCategory([ ...category, newCategory ])
@@ -91,6 +106,13 @@ export default function AddCategory() {
           {console.log(categoryName)}
         </button>
       </div>
+
+      {openModal && (
+        <Modal
+          message={modalMessage}
+          onClose={() => setOpenModal(false)}
+        />
+      )}
     </Layout>
   )
 }
