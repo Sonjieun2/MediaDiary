@@ -3,9 +3,9 @@ import { createContext, useContext, useEffect, useState } from 'react'
 const CategoryContext = createContext()
 
 const defaultCategory = [
-  { label: '영화', fields: ['runningTime', 'platform', 'seat', 'format'] },
-  { label: '드라마', fields: ['episode', 'platform', 'company'] },
-  { label: '애니메이션', fields: ['episode', 'platform', 'company'] },
+  { label: '영화', fields: ['runningTime', 'platform', 'seat', 'format'], custom: false },
+  { label: '드라마', fields: ['episode', 'platform', 'company'], custom: false },
+  { label: '애니메이션', fields: ['episode', 'platform', 'company'], custom: false },
 ]
 
 export function CategoryProvider({ children }) {

@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { RiArrowDropDownLine } from 'react-icons/ri'
+import { BsThreeDotsVertical } from 'react-icons/bs'
 
 export default function Dropdown({
-  options = [], placeholder, onSelect,
+  options = [], placeholder, onSelect, onDelete,
   className = '', buttonClassName = '', liClassName = ''
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [selected, setSelected] = useState(null)
   const dropdownRef = useRef(null)
+  const [menuOpen, setMenuOpen] = useState(null)
 
   const handleSelect = (option) => {
     setSelected(option)
@@ -45,13 +47,49 @@ export default function Dropdown({
           {options.map((option) => (
             <li
               key={option.id}
-              onClick={() => handleSelect(option)}
               className={`
                 px-4 py-2 text-lg text-beige-800 hover:bg-beige-600 cursor-pointer rounded-lg
                 ${liClassName}
               `}
             >
-              {option.label}
+              <div className="flex flex-row justify-between">
+                <span
+                  onClick={() => handleSelect(option)}
+                  className="flex-1 cursor-pointer"
+                >
+                  {option.label}
+                </span>
+
+                {option.custom && (
+                  <div className="relative">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setMenuOpen(
+                          menuOpen === option.label ? null : option.label
+                        )
+                      }}
+                    >
+                      <BsThreeDotsVertical />
+                    </button>
+
+                    {menuOpen === option.label && (
+                      <div className="absolute w-[90px] z-50 left-3 top-3 mt-1 bg-white border border-beige-800 rounded-md shadow-md">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation
+                            onDelete?.(option)
+                            setMenuOpen(null)
+                          }}
+                          className="px-4 py-2 w-full hover:bg-gray-100"
+                        >
+                          삭제
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </li>
           ))}
         </ul>

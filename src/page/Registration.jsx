@@ -19,7 +19,7 @@ export default function Registration() {
     { label: '보고싶음', id:2 },
   ]
 
-  const { category } = useCategory()
+  const { category, setCategory } = useCategory()
 
   const labelClass = "w-24 text-right shrink-0"
   const [chooseCategory, setChooseCategory] = useState(category[0])
@@ -28,6 +28,13 @@ export default function Registration() {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const currentFields = chooseCategory?.fields || []   // 카테고리별 아래 입력칸 출력
+
+  // 카테고리 삭제
+  const deleteCategory = (target) => {
+    setCategory(
+      category.filter(item => item.label !== target.label)
+    )
+  }
 
   return (
     <Layout className="relative px-[350px]">
@@ -57,6 +64,7 @@ export default function Registration() {
                   options={category}
                   placeholder="영화"
                   onSelect={setChooseCategory}
+                  onDelete={deleteCategory}
                   className="flex-1"
                   buttonClassName="py-3"
                 />

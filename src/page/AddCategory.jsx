@@ -20,19 +20,28 @@ export default function AddCategory() {
   }
 
   const addCategory = () => {
+    // 카테고리 이름 공백 확인
     if (categoryName === '') {
       setModalMessage('카테고리 이름을 입력하세요.')
       setOpenModal(true)
       return
     }
-
+    // 체크박스 체크 확인
     if (checked.length === 0) {
       setModalMessage('최소 1개 이상의 항목을 선택해주세요.')
       setOpenModal(true)
       return
     }
+    // 카테고리 이름 중복 확인
+    if (category.some(
+      item => item.label === categoryName.trim()
+    )) {
+      setModalMessage('이미 존재하는 카테고리입니다.')
+      setOpenModal(true)
+      return
+    }
 
-    const newCategory = { label: categoryName, fields: checked }
+    const newCategory = { label: categoryName, fields: checked, custom: true }
 
     setCategory([ ...category, newCategory ])
     
@@ -94,13 +103,13 @@ export default function AddCategory() {
       <div className="flex flex-row items-center justify-center gap-5 pt-10 w-full">
         <Link
           to='/upload'
-          className="w-1/4 px-10 py-3 bg-beige-700 text-white rounded-lg text-2xl"
+          className="w-1/4 px-10 py-3 bg-beige-500 border border-beige-700 rounded-lg text-2xl"
         >
           <p className="text-center">취소</p>
         </Link>
         <button
           onClick={addCategory}
-          className="w-1/4 items px-10 py-3 bg-beige-500 border border-beige-700 rounded-lg text-2xl"
+          className="w-1/4 items px-10 py-3 bg-beige-700 rounded-lg text-2xl text-white"
         >
           <p className="text-center">추가</p>
           {console.log(categoryName)}

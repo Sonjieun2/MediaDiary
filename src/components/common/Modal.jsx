@@ -7,7 +7,8 @@ export default function Modal({ message, onClose }) {
         <p>{message}</p>
         <button
           onClick={onClose}
-          className="w-full bg-beige-700 text-white px-5 py-2 rounded-lg">
+          className="w-full bg-beige-700 text-white px-5 py-2 rounded-lg"
+        >
           닫기
         </button>
       </div>
