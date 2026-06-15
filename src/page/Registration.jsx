@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PiStarFill, PiStarLight } from 'react-icons/pi'
 import { FaCalendarAlt, FaPlus } from 'react-icons/fa'
@@ -22,12 +22,24 @@ export default function Registration() {
   const { category, setCategory } = useCategory()
 
   const labelClass = "w-24 text-right shrink-0"
+  const [image, setImage] = useState(null)
+  const fileInputRef = useRef(null)
   const [chooseCategory, setChooseCategory] = useState(category[0])
   const [rating, setRating] = useState(0)
   const [chooseStatus, setChooseStatus] = useState(0)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const currentFields = chooseCategory?.fields || []   // 카테고리별 아래 입력칸 출력
+
+
+  // 이미지 추가
+  const handleImage = (e) => {
+    const file = e.target.files[0]
+    
+    if (!file) return
+
+    setImage(URL.createObjectURL(file))
+  }
 
   // 카테고리 삭제
   const deleteCategory = (target) => {
@@ -52,7 +64,27 @@ export default function Registration() {
         {/* 상단 */}
         <div className="flex flex-row w-full gap-[80px]">
           {/* 포스터 등록 */}
-          <div className="aspect-[2/3] w-[250px] bg-beige-600 rounded-lg" />
+          <div
+            onClick={() => fileInputRef.current.click()}
+            className="aspect-[2/3] w-[250px] bg-beige-600 rounded-lg cursor-pointer overflow-hidden flex items-center justify-center"
+          >
+            {image ? (
+              <img
+                src={image}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <FaPlus className="text-4xl text-beige-800" />
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/"
+              onChange={handleImage}
+              className="hidden"
+            />
+          </div>
 
           {/* 내용 등록 */}
           <div className="flex flex-col gap-8 flex-1 text-xl">
