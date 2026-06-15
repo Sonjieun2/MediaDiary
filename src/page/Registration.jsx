@@ -22,6 +22,7 @@ export default function Registration() {
   const { category, setCategory } = useCategory()
 
   const labelClass = "w-24 text-right shrink-0"
+
   const [image, setImage] = useState(null)
   const fileInputRef = useRef(null)
   const [chooseCategory, setChooseCategory] = useState(category[0])
@@ -47,6 +48,16 @@ export default function Registration() {
       category.filter(item => item.label !== target.label)
     )
   }
+
+  // 유튜브 추출
+  const [youtubeUrl, setYoutubeUrl] = useState('')
+  const getYoutubeId = (url) => {
+    const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/
+    const match = url.match(regExp)
+
+    return match ? match[1] : null
+  }
+  const videoId = getYoutubeId(youtubeUrl)   // iframe 주소
 
   return (
     <Layout className="relative px-[350px]">
@@ -188,7 +199,8 @@ export default function Registration() {
           </div>
         </div>
 
-        <div className="w-full border border-[1px] border-beige-700 mt-[70px] mb-[30px]"></div>
+        {/* 구분선 */}
+        <div className="w-full border border-[1px] border-beige-700 mt-[70px] mb-[30px]" />
 
         {/* 중간 */}
         <div className="flex flex-row w-full justify-between">
@@ -200,6 +212,40 @@ export default function Registration() {
             />
           ))}
         </div>
+
+        {/* 구분선 */}
+        <div className="w-full border border-[1px] border-beige-700 mt-[70px] mb-[30px]" />
+
+        {/* 하단 */}
+        <div className="flex flex-col justify-center">
+          {/* 음악 추가 */}
+          <div className="flex flex-row items-center gap-8">
+            <p className={labelClass}>음악</p>
+            
+            <input
+              value={youtubeUrl}
+              onChange={(e) => setYoutubeUrl(e.target.value)}
+              placeholder="유튜브 링크"
+              className="flex-1 px-3 py-2 border border-beige-700 rounded-lg"
+            />
+          </div>
+
+          {/* 플레이어 */}
+          { videoId && (
+            <div className="mt-5">
+              <iframe
+                width="100%"
+                height="250"
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title="Youtebe Player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="rounded-lg"
+              />
+            </div>
+          )}
+        </div>
+
       </div>
     </Layout>
   )
