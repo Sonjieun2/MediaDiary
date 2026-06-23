@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PiStarFill, PiStarLight } from 'react-icons/pi'
 import { FaCalendarAlt, FaPlus } from 'react-icons/fa'
-import { IoCaretBackCircle } from 'react-icons/io5'
+import { IoCaretBackCircle, IoSearch } from 'react-icons/io5'
 
 import Layout from '../components/common/Layout'
 import Dropdown from '../components/common/Dropdown'
@@ -49,15 +49,40 @@ export default function Registration() {
     )
   }
 
-  // 유튜브 추출
-  const [youtubeUrl, setYoutubeUrl] = useState('')
+  // 음악 세팅
+  const [musicTitle, setMusicTitle] = useState('')   // 입력할 음악 제목
+  const [youtubeUrl, setYoutubeUrl] = useState('')   // 복붙한 유튜브 링크
+  const [music, setMusic] = useState(null)   // 저장되는 음악 정보
+  const [showVideo, setShowVideo] = useState(true)   // 유튜브 영상 토글
+
+  // 유튜브 ID 추출
   const getYoutubeId = (url) => {
     const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?/]+)/
     const match = url.match(regExp)
 
     return match ? match[1] : null
   }
-  const videoId = getYoutubeId(youtubeUrl)   // iframe 주소
+
+  // 음악 추가 버튼
+  const handleMusic = () => {
+    if (!musicTitle.trim()) {
+      alert('음악 제목을 입력해주세요.')
+      return
+    }
+
+    if (!youtubeUrl.trim()) {
+      alert('유튜브 링크를 입력해주세요.')
+      return
+    }
+
+    setMusic({
+      title: musicTitle,
+      url: youtubeUrl
+    })
+
+    setMusicTitle('')
+    setYoutubeUrl('')
+  }
 
   return (
     <Layout className="relative px-[350px]">
@@ -217,31 +242,73 @@ export default function Registration() {
         <div className="w-full border border-[1px] border-beige-700 mt-[70px] mb-[30px]" />
 
         {/* 하단 */}
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center w-full">
           {/* 음악 추가 */}
-          <div className="flex flex-row items-center gap-8">
-            <p className={labelClass}>음악</p>
-            
+          <div className="flex flex-row items-center justify-center w-full gap-8 py-6">
+            <p className={`${labelClass} text-2xl`}>ost</p>
+
+            {/* 음악 제목 */}
+            <input
+              value={musicTitle}
+              onChange={(e) => setMusicTitle(e.target.value)}
+              placeholder="음악 제목"
+              className="px-3 py-2 border border-beige-700 rounded-lg"
+            />
+
+            {/* 유튜브 링크 추가 */}
             <input
               value={youtubeUrl}
               onChange={(e) => setYoutubeUrl(e.target.value)}
               placeholder="유튜브 링크"
               className="flex-1 px-3 py-2 border border-beige-700 rounded-lg"
             />
+
+            <button
+              onClick={handleMusic}
+              className="p-3 bg-beige-500 rounded-lg border border-beige-700 text-xl"
+            >
+              <IoSearch />
+            </button>
           </div>
 
           {/* 플레이어 */}
-          { videoId && (
-            <div className="mt-5">
-              <iframe
-                width="100%"
-                height="250"
-                src={`https://www.youtube.com/embed/${videoId}`}
-                title="Youtebe Player"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="rounded-lg"
-              />
+          { music && (
+            <div className="flex flex-col gap-3 p-4 bg-beige-500 border border-beige-700 rounded-lg">
+              <div className="flex flex-row items-center justify-between">
+                <div className="flex flex-row items-center gap-3">
+                  <p className="text-xl font-semibold">🎵 {music.title}</p>
+                  <button
+                    onClick={() => setShowVideo(!showVideo)}
+                    className="flex items-center px-2"
+                  >
+                    {showVideo ? '▲' : '▼'}
+                  </button>
+                </div>
+                <button
+                  onClick={() =>
+                    window.open(
+                      music.url, '_blank'
+                    )
+                  }
+                  className="self-start px-4 py-2 bg-beige-700 text-white rounded-lg"
+                >
+                  ▶ 유튜브 열기
+                </button>
+              </div>
+              
+              {showVideo && (
+                <div className="w-full aspect-video">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${getYoutubeId(music.url)}`}
+                    title="Youtube Player"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
+                    allowFullScreen
+                    className="w-full h-full rounded-lg"
+                  />
+                </div>
+              )}
+
+              <p className="hidden">{music.url}</p>
             </div>
           )}
         </div>
