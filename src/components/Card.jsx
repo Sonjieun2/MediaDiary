@@ -71,7 +71,7 @@ export default function Card({ commentary }) {
                     ([key, value]) => (
                       <div
                         key={key}
-                        className="flex jusitfy-between"
+                        className="flex jusitfy-between gap-2"
                       >
                         <span className="font-semibold">
                           {Field[key]?.label}

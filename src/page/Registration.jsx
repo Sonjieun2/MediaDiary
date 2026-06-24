@@ -48,7 +48,12 @@ export default function Registration() {
     
     if (!file) return
 
-    setImage(URL.createObjectURL(file))
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImage(reader.result)
+    }
+
+    reader.readAsDataURL(file)
   }
 
   // 카테고리 삭제
