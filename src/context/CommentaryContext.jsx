@@ -8,6 +8,13 @@ export function CommentaryProvider({ children }) {
     return saved ? JSON.parse(saved) : []
   })
 
+  // 삭제
+  const deleteCommentary = (id) => {
+    setCommentaries(prev =>
+      prev.filter(item => item.id !== id)
+    )
+  }
+
   useEffect(() => {
     localStorage.setItem(
       'commentaries',
@@ -16,7 +23,11 @@ export function CommentaryProvider({ children }) {
   }, [commentaries])
 
   return (
-    <CommentaryContext.Provider value={{ commentaries, setCommentaries }}>
+    <CommentaryContext.Provider
+      value={{
+        commentaries, setCommentaries, deleteCommentary,
+      }}
+    >
       {children}
     </CommentaryContext.Provider>
   )

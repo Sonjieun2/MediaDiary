@@ -2,12 +2,16 @@ import { useState } from 'react'
 import { MdMovie } from 'react-icons/md'
 import { FaRegClock } from 'react-icons/fa6'
 import { IoLocationOutline } from "react-icons/io5";
+import { BsThreeDotsVertical } from 'react-icons/bs'
 import Status from './ViewingStatus'
 
 import { Field } from '../components/forms/FieldConfigs'
+import { useCommentary } from '../context/CommentaryContext'
 
 export default function Card({ commentary }) {
+  const [openMenu, setOpenMenu] = useState(false)
   const [isFlipped, setIsFlipped] = useState(true)
+  const { deleteCommentary } = useCommentary()
 
   return(
     <div className="flex flex-col items-center">
@@ -92,9 +96,34 @@ export default function Card({ commentary }) {
       </div>
 
       {/* 제목, 별점 부분 */}
-      <div className="flex flex-col items-center py-3 text-xl font-bold">
+      <div className="relative flex flex-col items-center w-full py-3 text-xl font-bold">
         <p>{commentary.title}</p>
         <p>{'★'.repeat(commentary.rating)}</p>
+        
+        <div className="absolute right-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setOpenMenu(!openMenu)
+            }}
+          >
+            <BsThreeDotsVertical />
+          </button>
+
+          {openMenu && (
+            <div className="absolute top-8 right-0 bg-white border border-beige-400 rounded-lg shadow-sm">
+              <button
+                onClick={() => (
+                  deleteCommentary(commentary.id),
+                  setOpenMenu(!openMenu)
+                )}
+                className="px-6 py-2 text-lg w-full whitespace-nowrap hover:bg-beige-700 hover:text-white"
+              >
+                삭제
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
