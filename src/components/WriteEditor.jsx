@@ -11,7 +11,7 @@ import {
   FaBold, FaItalic, FaHeading
 } from 'react-icons/fa'
 
-export default function WriteEditor() {
+export default function WriteEditor({ onStoryChange, onReviewChange }) {
   const imageRef = useRef(null)
   const [activeEditor, setActiveEditor] = useState(null)
   const [, forceUpdate] = useState({})
@@ -21,7 +21,7 @@ export default function WriteEditor() {
       StarterKit, TextStyle, Color, Image,
       TextAlign.configure({types: ['heading', 'paragraph']})
     ],
-    content: `<p>줄거리를 입력하세요.</p>`
+    content: '<p>줄거리를 입력하세요.</p>'
   })
 
   const reviewEditor = useEditor({
@@ -29,7 +29,7 @@ export default function WriteEditor() {
       StarterKit, TextStyle, Color, Image,
       TextAlign.configure({types: ['heading', 'paragraph']})
     ],
-    content: `<p>감상문을 입력하세요.</p>`
+    content: '<p>감상문을 입력하세요.</p>'
   })
 
   if (!storyEditor || !reviewEditor) return null
@@ -40,10 +40,10 @@ export default function WriteEditor() {
     if (!file) return
     
     const url = URL.createObjectURL(file)
-    storyEditor.chain().focus().setImage({src:url}).run()
-    reviewEditor.chain().focus().setImage({src:url}).run()
+    activeEditor?.chain().focus().setImage({src:url}).run()
   }
 
+  // 툴바 상태 관리
   useEffect(() => {
     if (!activeEditor) return
 
@@ -59,6 +59,36 @@ export default function WriteEditor() {
       activeEditor.off('transaction', update)
     }
   }, [activeEditor])
+
+  // 줄거리 저장
+  useEffect(() => {
+    if (!storyEditor) return
+    
+    const update = ({ editor }) => {
+      onStoryChange?.(editor.getHTML())
+    }
+
+    storyEditor.on('update', update)
+
+    return () => {
+      storyEditor.off('update', update)
+    }
+  }, [storyEditor, onStoryChange])
+
+  // 감상문 저장
+  useEffect(() => {
+    if (!reviewEditor) return
+
+    const update = ({ editor }) => {
+      onReviewChange?.(editor.getHTML())
+    }
+
+    reviewEditor.on('update', update)
+
+    return () => {
+      reviewEditor.off('update', update)
+    }
+  }, [reviewEditor, onReviewChange])
 
   return (
     <div className="flex flex-col gap-3 w-full">

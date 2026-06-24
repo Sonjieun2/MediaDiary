@@ -4,7 +4,7 @@ export function Fields({ label, placeholder='', value, onChange }) {
       <p className="text-xl">{label}</p>
       <input
         value={value}   // input에 있는 값
-        onChange={onChange}   // 입력마다 실행되는 함수
+        onChange={(e) => onChange(e.target.value)}   // 입력마다 실행되는 함수
         placeholder={placeholder}
         className="
           w-full py-4 text-center text-xl

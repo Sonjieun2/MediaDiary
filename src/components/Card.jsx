@@ -4,7 +4,9 @@ import { FaRegClock } from 'react-icons/fa6'
 import { IoLocationOutline } from "react-icons/io5";
 import Status from './ViewingStatus'
 
-export default function Card() {
+import { Field } from '../components/forms/FieldConfigs'
+
+export default function Card({ commentary }) {
   const [isFlipped, setIsFlipped] = useState(true)
 
   return(
@@ -31,7 +33,12 @@ export default function Card() {
             "
           >
             <Status />
-            <div className="aspect-[2/3] w-full bg-gray-200"></div>
+            {/* 포스터 */}
+            <img
+              src={commentary.image}
+              alt={commentary.title}
+              className="aspect-[2/3] w-full object-cover rounded-lg"
+            />
           </div>
 
           {/* 뒷면 */}
@@ -53,20 +60,27 @@ export default function Card() {
 
               {/* 정보 */}
               <div className="flex flex-col gap-3">
-                <p className="text-2xl font-bold">제목</p>
-                <p>2026-05-20 (수)</p>
+                {/* 제목 */}
+                <p className="text-2xl font-bold">{commentary.title}</p>
+                {/* 날짜 */}
+                <p>{new Date(commentary.date).toLocaleDateString('ko-KR')}</p>
 
-                <div className="flex flex-row gap-3 items-center">
-                  <FaRegClock />
-                  <p>129분</p>
-                </div>
+                {/* 상세정보 */}
+                <div className="flex flex-col gap-2">
+                  {Object.entries(commentary.details || {}).map(
+                    ([key, value]) => (
+                      <div
+                        key={key}
+                        className="flex jusitfy-between"
+                      >
+                        <span className="font-semibold">
+                          {Field[key]?.label}
+                        </span>
 
-                <div className="flex flex-row gap-3">
-                  <IoLocationOutline className="mt-1 text-xl" />
-                  <div className="flex flex-col">
-                    <p>영화관</p>
-                    <p>6관 G10</p>
-                  </div>
+                        <span>{value}</span>
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
 
@@ -79,8 +93,8 @@ export default function Card() {
 
       {/* 제목, 별점 부분 */}
       <div className="flex flex-col items-center py-3 text-xl font-bold">
-        <p>제목</p>
-        <p>★★★★★</p>
+        <p>{commentary.title}</p>
+        <p>{'★'.repeat(commentary.rating)}</p>
       </div>
     </div>
   )

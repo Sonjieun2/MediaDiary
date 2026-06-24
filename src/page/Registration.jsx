@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { PiStarFill, PiStarLight } from 'react-icons/pi'
 import { FaCalendarAlt, FaPlus } from 'react-icons/fa'
 import { IoCaretBackCircle, IoSearch } from 'react-icons/io5'
@@ -11,7 +11,9 @@ import WriteEditor from '../components/WriteEditor'
 
 import { Fields } from '../components/forms/Fields'
 import { Field, FieldConfig } from '../components/forms/FieldConfigs'
+
 import { useCategory } from '../context/CategoryContext'
+import { useCommentary } from '../context/CommentaryContext'
 
 export default function Registration() {
   const Status = [
@@ -20,18 +22,24 @@ export default function Registration() {
     { label: '보고싶음', id:2 },
   ]
 
-  const { category, setCategory } = useCategory()
-
   const labelClass = "w-24 text-right shrink-0"
 
-  const [image, setImage] = useState(null)
+  const { category, setCategory } = useCategory()
+
+  const [image, setImage] = useState(null)   //포스터
   const fileInputRef = useRef(null)
-  const [chooseCategory, setChooseCategory] = useState(category[0])
-  const [rating, setRating] = useState(0)
-  const [chooseStatus, setChooseStatus] = useState(0)
-  const [selectedDate, setSelectedDate] = useState(new Date())
+  const [chooseCategory, setChooseCategory] = useState(category[0])   // 카테고리
+  const [title, setTitle] = useState("")   // 제목
+  const [rating, setRating] = useState(0)   // 별점
+  const [chooseStatus, setChooseStatus] = useState(0)   // 시청 상태
+  const [selectedDate, setSelectedDate] = useState(new Date())   // 날짜
   const [open, setOpen] = useState(false)
   const currentFields = chooseCategory?.fields || []   // 카테고리별 아래 입력칸 출력
+
+  const [details, setDetails] = useState({})
+
+  const [story, setStory] = useState('')   // 줄거리
+  const [review, setReview] = useState('')   // 감상문
 
 
   // 이미지 추가
@@ -83,6 +91,25 @@ export default function Registration() {
 
     setMusicTitle('')
     setYoutubeUrl('')
+  }
+
+  // 저장
+  const navigate = useNavigate()
+  const { commentaries, setCommentaries } = useCommentary()
+  const handleSave = () => {
+    const newCommentary = {
+      id: Date.now(),
+      image, category: chooseCategory.label, title,
+      rating, status: chooseStatus, date: selectedDate,
+      details, music, story, review,
+    }
+
+    setCommentaries([
+      ...commentaries,
+      newCommentary
+    ])
+
+    navigate('/')
   }
 
   return (
@@ -152,7 +179,11 @@ export default function Registration() {
               {/* 제목 */}
               <div className="flex flex-row items-center gap-8">
                 <p className={labelClass}>제목</p>
-                <input className="flex-1 px-3 py-3 w-[380px] bg-beige-600 border border-beige-700 rounded-lg" />
+                <input 
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="flex-1 px-3 py-3 w-[380px] bg-beige-600 border border-beige-700 rounded-lg"
+                />
               </div>
 
               {/* 별점 */}
@@ -238,6 +269,13 @@ export default function Registration() {
                 key={field}
                 label={Field[field].label}
                 placeholder={Field[field].placeholder}
+                value={details[field] || ''}
+                onChange={(value) =>
+                  setDetails(prev => ({
+                    ...prev,
+                    [field]: value,
+                  }))
+                }
               />
             ))}
           </div>
@@ -319,8 +357,20 @@ export default function Registration() {
 
         {/* 줄거리 */}
         <div className="flex flex-col items-center jusitfy-center px-[40px] py-[30px] bg-beige-400 rounded-lg shadow-md">
-          <WriteEditor />
+          <WriteEditor
+            onStoryChange={setStory}
+            onReviewChange={setReview}
+          />
         </div>
+      </div>
+
+      <div className="flex justify-center">
+        <button
+          onClick={handleSave}
+          className="w-full mt-10 py-5 bg-beige-700 text-white text-xl font-bold rounded-lg"
+        >
+          저장
+        </button>
       </div>
     </Layout>
   )
