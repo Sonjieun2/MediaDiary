@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { TextStyle } from '@tiptap/extension-text-style'
@@ -13,15 +13,26 @@ import {
 
 export default function WriteEditor() {
   const imageRef = useRef(null)
-  const editor = useEditor({
+  const [activeEditor, setActiveEditor] = useState(null)
+  const [, forceUpdate] = useState({})
+
+  const storyEditor = useEditor({
     extensions: [
       StarterKit, TextStyle, Color, Image,
       TextAlign.configure({types: ['heading', 'paragraph']})
     ],
-    content: '<p>줄거리를 입력하세요.</p>',
+    content: `<p>줄거리를 입력하세요.</p>`
   })
 
-  if (!editor) return null
+  const reviewEditor = useEditor({
+    extensions: [
+      StarterKit, TextStyle, Color, Image,
+      TextAlign.configure({types: ['heading', 'paragraph']})
+    ],
+    content: `<p>감상문을 입력하세요.</p>`
+  })
+
+  if (!storyEditor || !reviewEditor) return null
 
   // 이미지 추가
   const handleImage = (e) => {
@@ -29,65 +40,85 @@ export default function WriteEditor() {
     if (!file) return
     
     const url = URL.createObjectURL(file)
-    editor.chain().focus().setImage({src:url}).run()
+    storyEditor.chain().focus().setImage({src:url}).run()
+    reviewEditor.chain().focus().setImage({src:url}).run()
   }
+
+  useEffect(() => {
+    if (!activeEditor) return
+
+    const update = () => {
+      forceUpdate({})
+    }
+
+    activeEditor.on('selectionUpdate', update)
+    activeEditor.on('transaction', update)
+
+    return () => {
+      activeEditor.off('selectionUpdate', update)
+      activeEditor.off('transaction', update)
+    }
+  }, [activeEditor])
 
   return (
     <div className="flex flex-col gap-3 w-full">
       {/* 툴바 */}
-      <div className="flex gap-2 p-2 bg-beige-500 border border-beige-700 rounded-lg">
+      <div className="
+        flex gap-2 p-4 bg-beige-500 border border-beige-700 rounded-lg
+        sticky top-[60px] z-50
+      ">
         {/* 굵게 */}
         <button
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`px-3 py-1 rounded ${editor.isActive('bold') ? 'bg-beige-700 text-white' : 'bg-white'}`}
+          onClick={() => activeEditor?.chain().focus().toggleBold().run()}
+          className={`p-3 rounded ${activeEditor?.isActive('bold') ? 'bg-beige-700 text-white' : 'bg-white'}`}
         >
           <FaBold />
         </button>
 
         {/* 기울임 */}
         <button
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`px-3 py-1 rounded ${editor.isActive('italic') ? 'bg-beige-700 text-white' : 'bg-white'}`}
+          onClick={() => activeEditor?.chain().focus().toggleItalic().run()}
+          className={`p-3 rounded ${activeEditor?.isActive('italic') ? 'bg-beige-700 text-white' : 'bg-white'}`}
         >
           <FaItalic />
         </button>
 
         {/* 제목 */}
         <button
-          onClick={() => editor.chain().focus().toggleHeading({level:1}).run()}
-          className={`px-3 py-1 rounded ${editor.isActive('heading', {level:1}) ? 'bg-beige-700 text-white' : 'bg-white'}`}
+          onClick={() => activeEditor?.chain().focus().toggleHeading({level:1}).run()}
+          className={`p-3 rounded ${activeEditor?.isActive('heading', {level:1}) ? 'bg-beige-700 text-white' : 'bg-white'}`}
         >
           <FaHeading />
         </button>
 
         {/* 왼쪽 정렬 */}
         <button
-          onClick={() => editor.chain().focus().setTextAlign('left').run()}
-          className="px-3 py-1 border rounded"
+          onClick={() => activeEditor?.chain().focus().setTextAlign('left').run()}
+          className={`p-3 border rounded ${activeEditor?.isActive({textAlign: 'left'}) ? 'bg-beige-700 text-white' : 'bg-white'}`}
         >
           <FaAlignLeft />
         </button>
 
         {/* 가운데 정렬 */}
         <button
-          onClick={() => editor.chain().focus().setTextAlign('center').run()}
-          className="px-3 py-1 border rounded"
+          onClick={() => activeEditor?.chain().focus().setTextAlign('center').run()}
+          className={`p-3 border rounded ${activeEditor?.isActive({textAlign: 'center'}) ? 'bg-beige-700 text-white' : 'bg-white'}`}
         >
           <FaAlignCenter />
         </button>
 
         {/* 오른쪽 정렬 */}
         <button
-          onClick={() => editor.chain().focus().setTextAlign('right').run()}
-          className="px-3 py-1 border rounded"
+          onClick={() => activeEditor?.chain().focus().setTextAlign('right').run()}
+          className={`p-3 border rounded ${activeEditor?.isActive({textAlign: 'right'}) ? 'bg-beige-700 text-white' : 'bg-white'}`}
         >
           <FaAlignRight />
         </button>
 
         {/* 인용문 */}
         <button
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className="px-3 py-1 border rounded"
+          onClick={() => activeEditor?.chain().focus().toggleBlockquote().run()}
+          className={`p-3 border rounded ${activeEditor?.isActive('blockquote') ? 'bg-beige-700 text-white' : 'bg-white'}`}
         >
           <FaQuoteLeft />
         </button>
@@ -95,7 +126,7 @@ export default function WriteEditor() {
         {/* 이미지 추가 */}
         <button
           onClick={() => imageRef.current.click()}
-          className="px-3 py-1 border rounded"
+          className="p-3 border bg-white rounded hover:bg-beige-700 hover:text-white transition-colors"
         >
           <FaImage />
         </button>
@@ -110,27 +141,30 @@ export default function WriteEditor() {
 
       {/* 에디터 */}
       <EditorContent
-        editor={editor}
+        editor={storyEditor}
+        onClick={() => setActiveEditor(storyEditor)}
         className="
-          min-h-[250px] border border-beige-700 rounded-lg p-5 bg-beige-600 outline-none
+          min-h-[250px] border border-beige-700 rounded-lg p-5 bg-beige-500 outline-none
           [&_.ProseMirror]:min-h-[200px] [&_.ProseMirror]:outline-none
           [&_h1]:text-3xl [&_h1]:font-bold
           [&_strong]:font-bold
           [&_em]:italic
+          [&_blockquote]:border-l-4 [&_blockquote]:border-beige-700 [&_blockquote]:pl-4 [&_blockquote]:text-gray-700
         "
       />
 
-      {/* 저장 확인용 
-      <button
-        onClick={() => {
-          const html = editor.getHTML()
-          console.log(html)
-        }}
-        className="self-end px-5 py-2 bg-beige-700 text-white rounded-lg"
-      >
-        저장
-      </button>
-      */}
+      <EditorContent
+        editor={reviewEditor}
+        onClick={() => setActiveEditor(reviewEditor)}
+        className="
+          min-h-[250px] border border-beige-700 rounded-lg p-5 bg-beige-500 outline-none
+          [&_.ProseMirror]:min-h-[200px] [&_.ProseMirror]:outline-none
+          [&_h1]:text-3xl [&_h1]:font-bold
+          [&_strong]:font-bold
+          [&_em]:italic
+          [&_blockquote]:border-l-4 [&_blockquote]:border-beige-700 [&_blockquote]:pl-4 [&_blockquote]:text-gray-700
+        "
+      />
     </div>
   )
 }
